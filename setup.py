@@ -14,11 +14,10 @@ setuptools.setup(
     description="Python implementation of the A.Lomax Filter Picker",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    # url="https://github.com/billy4all/quake",
+    url="https://gitlab.ethz.ch/mbagagli/filterpicker",
     python_requires='>=3.6',
     install_requires=required_list,
     packages=setuptools.find_packages(),
-    # package_dir={'': 'quake'},
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
