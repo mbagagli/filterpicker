@@ -140,7 +140,12 @@ class FilterPicker(object):
         # [FnS, _] = np.max(self.Fn, [], 1)   # Maximum of all bands MATLAB
         self.FnS = self.Fn.max(0)   # Maximum of all bands
         self.FnS[self.FnS < 0] = 0
-        convVec = np.concatenate(([0.0], np.ones(self.PRM_Tup-1), [0.0])) / self.PRM_Tup
+
+        # v0.1.2 test --> #MB temporary hack
+        # removing -2 index because matlab remove -1
+        # convVec = np.concatenate(([0.0], np.ones(self.PRM_Tup-1), [0.0])) / self.PRM_Tup
+        convVec = (np.concatenate(([0.0], np.ones(self.PRM_Tup-2), [0.0])) /
+                   self.PRM_Tup)
         self.FnMAvg = np.convolve(self.FnS, convVec, 'valid')
         self.PotTrg = np.where(self.FnS > self.thr1)[0]
         return True
@@ -171,7 +176,16 @@ class FilterPicker(object):
                 if self.FnMAvg[tmpTrg] > self.thr2:
                     bandTrg = np.where(self.Fn[:, tmpTrg] > self.thr1)[0][0]
 
-                    bandTrg += 1   # 09052019 MB
+                    # --- v0.1.2
+                    # Next line is to give back the same index as Yavor MATLAB
+                    # implementation of frequency band used for picking.
+                    # Unfortunately if the last band is selected this will
+                    # mess up with the calculations. MATLAB and Python indexing
+                    # differs (1 and 0 resp.)
+                    #
+                    # Edit: a +=1 is added at the final stage !!!
+
+                    # bandTrg += 1   # 09052019 MB  <---- (LEAVE IT COMMENTED)
 
                     firstPot = np.where((self.Fn[bandTrg,
                                                  np.arange(tmpTrg, -1, -1)] -
@@ -182,16 +196,12 @@ class FilterPicker(object):
                     if not firstPot:
                         firstPot = 0
                     # else:
-                        # This else was added 09052019
-
-                        # If next line is switched ON the uncertainty will
-                        # be equal to Y.Kamer MATLAB IMPLEMENTATION
-
-                        # firstPot = firstPot + 1
+                    #     # --- This else was added 09052019
+                    #     # If next line is switched ON the uncertainty will
+                    #     # be equal to Y.Kamer MATLAB IMPLEMENTATION
+                    #     firstPot = firstPot + 1
 
                     pickFRQ[i] = bandTrg
-
-
                     pickIDX[i] = (tmpTrg - firstPot)
 
                     # 07052019: If bandTrg-1 = 0 it mess up everything.
@@ -203,8 +213,13 @@ class FilterPicker(object):
                         pickUNC[i] = limT * self.dt
                     else:
                         pickUNC[i] = firstPot * self.dt
+
                     # Disable next potential picks until FnS drops below 2
-                    idxDrop = np.where(self.FnS[tmpTrg:] < 2)[0][0]
+                    try:
+                        idxDrop = np.where(self.FnS[tmpTrg:] < 2)[0][0]
+                    except IndexError:
+                        idxDrop = None
+
                     if idxDrop:
                         flagTrg[(self.PotTrg > tmpTrg) &
                                 (self.PotTrg <= (tmpTrg + idxDrop))] = 0
@@ -246,7 +261,7 @@ class FilterPicker(object):
         self._setup()
         self._loopOverBands()
         self._analyzeTrigger()
-        return self.pickIDX*self.dt, self.pickUNC, self.pickFRQ
+        return self.pickIDX*self.dt, self.pickUNC, self.pickFRQ+1
 
     def plot(self, show=True):
         """
@@ -274,11 +289,15 @@ class FilterPicker(object):
         axLst[0].plot(np.arange(0, len(self.FnMAvg), 1)*self.dt, self.FnMAvg,
                       ':r', lw=1.5, label='Mov. Avg. (Tup)')
         # 24052019 Next if avoid crashing of software if no pick found
-        if self.PotTrg and self.pickIDX:
-            axLst[0].axvline(self.PotTrg*self.dt, color='b', ls='solid',
-                             lw=2, label='Triggers')
-            axLst[0].axvline(self.pickIDX*self.dt, color='r', ls='solid',
-                             lw=2, label='Picks')
+        if self.PotTrg.size and self.pickIDX.size:
+            for _xx in range(self.PotTrg.size):
+                axLst[0].axvline(self.PotTrg[_xx]*self.dt,
+                                 color='b', ls='solid',
+                                 lw=2, label='Triggers')
+            for _yy in range(self.pickIDX.size):
+                axLst[0].axvline(self.pickIDX[_yy]*self.dt,
+                                 color='r', ls='solid',
+                                 lw=2, label='Picks')
         axLst[0].set_xlim([timeax[0], timeax[-1]])
         axLst[0].legend(loc='upper left')
         #

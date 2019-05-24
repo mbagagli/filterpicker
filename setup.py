@@ -8,7 +8,7 @@ with open("requirements.txt") as f:
 
 setuptools.setup(
     name="filterpicker",
-    version="0.1.1",
+    version="0.1.2",
     author="Matteo Bagagli",
     author_email="matteo.bagagli@erdw.ethz.com",
     description="Python implementation of the A.Lomax Filter Picker",

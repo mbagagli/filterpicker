@@ -23,6 +23,7 @@ def test_simple():
     #
     try:
         assert pytest.approx(0.008, 0.001) == punc[0]
+        # assert pytest.approx(0.016, 0.001) == punc[0]
     except AssertionError:
         errors.append("Erroneous PickUncert")
     #
