@@ -1,9 +1,6 @@
 import os
-import sys
 import numpy as np
 import matplotlib.pyplot as plt
-#
-import pdb
 
 
 # ---------------------------------------- Class Def
@@ -30,9 +27,9 @@ class FilterPicker(object):
     """
 
     def __init__(self, dt, data,
-                 filter_window=300,
-                 longterm_window=500,
-                 t_up=20,
+                 filter_window=3.0,     # dt=0.01 sec --> 300 samples
+                 longterm_window=5.0,   # dt=0.01 sec --> 500 samples
+                 t_up=0.2,              # dt=0.01 sec --> 500 samples
                  threshold_1=10,
                  threshold_2=10,
                  base=2):
@@ -40,19 +37,34 @@ class FilterPicker(object):
         Initialize the object:
          - dt: is the sampling period of the trace
          - data: is the values
+         - filter_window:
+         - longterm_window:
         For the picker parameter go throught the references
 
         """
         self.dt = dt
         self.y = data
-        self.tf = filter_window
-        self.tl = longterm_window
-        self.tup = t_up
+        self.tf = self._sec2sample(filter_window, 1.0/self.dt)
+        self.tl = self._sec2sample(longterm_window, 1.0/self.dt)
+        self.tup = self._sec2sample(t_up, 1.0/self.dt)
         self.thr1 = float(threshold_1)
         self.thr2 = float(threshold_2)
         self.numSMP = len(self.y)
         self.veclim = (0, len(self.y))  # this can be changed to work on smaller portion
         self.base = base
+
+    def _sec2sample(self, value, df):
+        """
+        Utility method to define convert USER input parameter (seconds)
+        into obspy pickers 'n_sample' units.
+
+        Python3 round(float)==int // Python2 round(float)==float
+        BETTER USE: int(round(... to have compatibility
+
+        Formula: int(round( INSEC * df))
+        *** NB: input value sec could be float
+        """
+        return int(round(value * df))
 
     def _setup(self):
         """ Finalize the parameter preparation based on input """
@@ -66,7 +78,7 @@ class FilterPicker(object):
         Navg = np.min([np.round(self.PRM_Tlng), self.numSMP])
         self.y0 = np.mean(self.y[0:Navg])  #Navg-1 -> Navg because python idx start from 0
         self.numBnd = int(np.ceil(np.log(PRM_Tflt)/np.log(self.base)))
-        #
+        # Not that the next 3 array, the index 0 (first) will not be used
         self.Fn = np.zeros([self.numBnd, self.numSMP])
         self.FnL = np.zeros([self.numBnd, self.numSMP])
         self.Yout = np.zeros([self.numBnd, self.numSMP])
@@ -130,42 +142,56 @@ class FilterPicker(object):
         self.FnS[self.FnS < 0] = 0
         convVec = np.concatenate(([0.0], np.ones(self.PRM_Tup-1), [0.0])) / self.PRM_Tup
         self.FnMAvg = np.convolve(self.FnS, convVec, 'valid')
-        self.PotTrg = np.where(self.FnS > self.thr1)[0]  # Vector of potential triggers
+        self.PotTrg = np.where(self.FnS > self.thr1)[0]
         return True
 
     def _analyzeTrigger(self):
         """ Final part of the picker """
         # Next line is to remove from array
-        # self.PotTrg[self.PotTrg < (self.PRM_Tlng+self.veclim[0]) | self.PotTrg > self.numSMP - self.PRM_Tup] = [] # MATLAB
         remidx = np.where((self.PotTrg < (self.PRM_Tlng + self.veclim[0])) |
                           (self.PotTrg > (self.numSMP - self.PRM_Tup))
                           )[0]
         self.PotTrg = np.delete(self.PotTrg, remidx)
 
-        flagTrg = np.full(np.shape(self.PotTrg), True)    # Create array of TRUE/NaN size Ptotrg
+        flagTrg = np.full(np.shape(self.PotTrg), True)    # ...unless prove not
         pickIDX = np.full(np.shape(self.PotTrg), np.nan)  # time of the pick
         pickUNC = np.full(np.shape(self.PotTrg), np.nan)  # uncertainty ...
         pickFRQ = np.full(np.shape(self.PotTrg), np.nan)  # frequency ...
 
-        for i in range(0, len(flagTrg)): # *** MB check index
+        """
+        MB 08052019
+        The next loop in MATLAB was seeking in the correct band,
+        but indexing in MAT start from 1, not 0
+
+        % FIX
+        """
+        for i in range(0, len(flagTrg)):  # *** MB check index
             if flagTrg[i]:
                 tmpTrg = self.PotTrg[i]
                 if self.FnMAvg[tmpTrg] > self.thr2:
                     bandTrg = np.where(self.Fn[:, tmpTrg] > self.thr1)[0][0]
 
-                    # MATLAB REFERENCE
-                    # firstPot = np.where((self.Fn[bandTrg, tmpTrg:-1:1] -
-                    #                     self.FnL[bandTrg, tmpTrg:-1:1]) < 0)[0][0]
+                    bandTrg += 1   # 09052019 MB
 
                     firstPot = np.where((self.Fn[bandTrg,
                                                  np.arange(tmpTrg, -1, -1)] -
                                          self.FnL[bandTrg,
                                                   np.arange(tmpTrg, -1, -1)])
                                         < 0)[0][0]
-
+                    #
                     if not firstPot:
                         firstPot = 0
+                    # else:
+                        # This else was added 09052019
+
+                        # If next line is switched ON the uncertainty will
+                        # be equal to Y.Kamer MATLAB IMPLEMENTATION
+
+                        # firstPot = firstPot + 1
+
                     pickFRQ[i] = bandTrg
+
+
                     pickIDX[i] = (tmpTrg - firstPot)
 
                     # 07052019: If bandTrg-1 = 0 it mess up everything.
@@ -205,6 +231,8 @@ class FilterPicker(object):
         outarr = outarr + rangeVal[0]
         return outarr
 
+    # ----------------------------------------------- PUBLIC
+
     def run(self):
         """
         Orchestrator of the picker, calls in sequence the
@@ -229,8 +257,9 @@ class FilterPicker(object):
             - Return Fig Handle
 
         """
+        # --- Body
         fig, axLst = plt.subplots(nrows=self.numBnd,
-                                  sharex=True,
+                                  sharex=True, sharey=True,
                                   figsize=(10, 7))
 
         ymax = np.max(self.FnS[self.PRM_Tlng:])
@@ -244,12 +273,14 @@ class FilterPicker(object):
                       ':k', lw=1.5, label='max CF')
         axLst[0].plot(np.arange(0, len(self.FnMAvg), 1)*self.dt, self.FnMAvg,
                       ':r', lw=1.5, label='Mov. Avg. (Tup)')
-        axLst[0].axvline(self.PotTrg*self.dt, color='b', ls='solid',
-                         lw=2, label='Triggers')
-        axLst[0].axvline(self.pickIDX*self.dt, color='r', ls='solid',
-                         lw=2, label='Picks')
+        # 24052019 Next if avoid crashing of software if no pick found
+        if self.PotTrg and self.pickIDX:
+            axLst[0].axvline(self.PotTrg*self.dt, color='b', ls='solid',
+                             lw=2, label='Triggers')
+            axLst[0].axvline(self.pickIDX*self.dt, color='r', ls='solid',
+                             lw=2, label='Picks')
         axLst[0].set_xlim([timeax[0], timeax[-1]])
-        axLst[0].legend(loc='upper right')
+        axLst[0].legend(loc='upper left')
         #
         for _kk in range(1, self.numBnd):
             # LP
@@ -276,7 +307,7 @@ class FilterPicker(object):
 
             # Additional
             axLst[_kk].set_xlim([timeax[0], timeax[-1]])
-            axLst[_kk].legend(loc='upper right')
+            axLst[_kk].legend(loc='upper left')
 
         #
         plt.tight_layout()
