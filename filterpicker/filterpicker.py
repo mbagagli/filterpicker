@@ -50,7 +50,8 @@ class FilterPicker(object):
         self.thr1 = float(threshold_1)
         self.thr2 = float(threshold_2)
         self.numSMP = len(self.y)
-        self.veclim = (0, len(self.y))  # this can be changed to work on smaller portion
+        # MB: next line can be changed to work on smaller portion
+        self.veclim = (0, len(self.y))
         self.base = base
 
     def _sec2sample(self, value, df):
@@ -76,9 +77,9 @@ class FilterPicker(object):
         self.PRM_Tup = np.max([1, self.tup])
         self.MIN_SIG = np.finfo(float).tiny
         Navg = np.min([np.round(self.PRM_Tlng), self.numSMP])
-        self.y0 = np.mean(self.y[0:Navg])  #Navg-1 -> Navg because python idx start from 0
+        self.y0 = np.mean(self.y[0:Navg])
         self.numBnd = int(np.ceil(np.log(PRM_Tflt)/np.log(self.base)))
-        # Not that the next 3 array, the index 0 (first) will not be used
+
         self.Fn = np.zeros([self.numBnd, self.numSMP])
         self.FnL = np.zeros([self.numBnd, self.numSMP])
         self.Yout = np.zeros([self.numBnd, self.numSMP])
@@ -87,8 +88,7 @@ class FilterPicker(object):
     def _loopOverBands(self):
         """ Middle term game of the picker """
 
-        # - Per ogni banda, per ogni indice costruisco la CF
-        # - n+1 -> n perche' si parte gia da 1 (che e' il secondo indice di lista)
+        # MB: For each band the CF is created
 
         for n in range(1, self.numBnd):
             w = (self.base**n*self.dt) / (2*np.pi)
@@ -113,7 +113,8 @@ class FilterPicker(object):
                 yHP2 = cHP*(yHP2p + yHP1 - yHP1p)  # Second high-pass
                 yLP = yLPp + cLP*(yHP2 - yLPp)     # Low-pass
                 En = yLP**2                        # Envelope
-                # store anyway for further plots
+
+                # MB: store anyway for further plots
                 self.Yout[n, i] = yLP
                 #
                 yHP1p = yHP1
@@ -124,12 +125,12 @@ class FilterPicker(object):
                         En = 5*self.thr1 * sig+avg
                         self.Fn[n, i] = 5*self.thr1
                     else:
-                        self.Fn[n, i] = (En-avg)/sig  # Characteristic function
+                        self.Fn[n, i] = (En-avg)/sig  # CF
                         if (self.Fn[n, i] < 1):
                             self.Fn[n, i] = 0.0
 
-                avg = self.PRM_Clng*avg + (1-self.PRM_Clng)*En  # Mean
-                vrn = self.PRM_Clng*vrn + (1-self.PRM_Clng)*(En-avg) ** 2  # Variance
+                avg = self.PRM_Clng*avg + (1-self.PRM_Clng)*En
+                vrn = self.PRM_Clng*vrn + (1-self.PRM_Clng)*(En-avg) ** 2
                 sig = np.sqrt(vrn)  # Standard deviation
 
                 tmpFNL = self.PRM_Clng*tmpFNL + (1-self.PRM_Clng)*self.Fn[n, i]
@@ -137,13 +138,9 @@ class FilterPicker(object):
                 tmpFNL = max(0.5, tmpFNL)
                 self.FnL[n, i] = tmpFNL
         #
-        # [FnS, _] = np.max(self.Fn, [], 1)   # Maximum of all bands MATLAB
         self.FnS = self.Fn.max(0)   # Maximum of all bands
         self.FnS[self.FnS < 0] = 0
 
-        # v0.1.2 test --> #MB temporary hack
-        # removing -2 index because matlab remove -1
-        # convVec = np.concatenate(([0.0], np.ones(self.PRM_Tup-1), [0.0])) / self.PRM_Tup
         convVec = (np.concatenate(([0.0], np.ones(self.PRM_Tup-2), [0.0])) /
                    self.PRM_Tup)
         self.FnMAvg = np.convolve(self.FnS, convVec, 'valid')
@@ -152,40 +149,23 @@ class FilterPicker(object):
 
     def _analyzeTrigger(self):
         """ Final part of the picker """
-        # Next line is to remove from array
+
+        # Next line find index to remove from array
         remidx = np.where((self.PotTrg < (self.PRM_Tlng + self.veclim[0])) |
                           (self.PotTrg > (self.numSMP - self.PRM_Tup))
                           )[0]
         self.PotTrg = np.delete(self.PotTrg, remidx)
 
-        flagTrg = np.full(np.shape(self.PotTrg), True)    # ...unless prove not
-        pickIDX = np.full(np.shape(self.PotTrg), np.nan)  # time of the pick
-        pickUNC = np.full(np.shape(self.PotTrg), np.nan)  # uncertainty ...
-        pickFRQ = np.full(np.shape(self.PotTrg), np.nan)  # frequency ...
+        flagTrg = np.full(np.shape(self.PotTrg), True)
+        pickIDX = np.full(np.shape(self.PotTrg), np.nan)
+        pickUNC = np.full(np.shape(self.PotTrg), np.nan)
+        pickFRQ = np.full(np.shape(self.PotTrg), np.nan)
 
-        """
-        MB 08052019
-        The next loop in MATLAB was seeking in the correct band,
-        but indexing in MAT start from 1, not 0
-
-        % FIX
-        """
         for i in range(0, len(flagTrg)):  # *** MB check index
             if flagTrg[i]:
                 tmpTrg = self.PotTrg[i]
                 if self.FnMAvg[tmpTrg] > self.thr2:
                     bandTrg = np.where(self.Fn[:, tmpTrg] > self.thr1)[0][0]
-
-                    # --- v0.1.2
-                    # Next line is to give back the same index as Yavor MATLAB
-                    # implementation of frequency band used for picking.
-                    # Unfortunately if the last band is selected this will
-                    # mess up with the calculations. MATLAB and Python indexing
-                    # differs (1 and 0 resp.)
-                    #
-                    # Edit: a +=1 is added at the final stage !!!
-
-                    # bandTrg += 1   # 09052019 MB  <---- (LEAVE IT COMMENTED)
 
                     firstPot = np.where((self.Fn[bandTrg,
                                                  np.arange(tmpTrg, -1, -1)] -
@@ -195,18 +175,10 @@ class FilterPicker(object):
                     #
                     if not firstPot:
                         firstPot = 0
-                    # else:
-                    #     # --- This else was added 09052019
-                    #     # If next line is switched ON the uncertainty will
-                    #     # be equal to Y.Kamer MATLAB IMPLEMENTATION
-                    #     firstPot = firstPot + 1
 
                     pickFRQ[i] = bandTrg
                     pickIDX[i] = (tmpTrg - firstPot)
 
-                    # 07052019: If bandTrg-1 = 0 it mess up everything.
-                    #           We need to use it with index properly,
-                    #           Matlab start from 1, Python from 0
                     limT = (self.base**bandTrg)/20
 
                     if firstPot < limT:

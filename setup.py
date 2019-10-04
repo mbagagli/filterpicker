@@ -10,7 +10,7 @@ setuptools.setup(
     name="filterpicker",
     version="1.0.1",
     author="Matteo Bagagli",
-    author_email="matteo.bagagli@erdw.ethz.com",
+    author_email="matteo.bagagli@gmail.com",
     description="Python implementation of the A.Lomax Filter Picker",
     long_description=long_description,
     long_description_content_type="text/markdown",
