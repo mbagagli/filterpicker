@@ -1,4 +1,4 @@
-import setuptools
+from setuptools import setup, find_packages
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 with open("requirements.txt") as f:
     required_list = f.read().splitlines()
 
-setuptools.setup(
+setup(
     name="filterpicker",
     version="1.0.1",
     author="Matteo Bagagli",
@@ -17,11 +17,18 @@ setuptools.setup(
     url="https://gitlab.ethz.ch/mbagagli/filterpicker",
     python_requires='>=3.6',
     install_requires=required_list,
-    packages=setuptools.find_packages(),
+    setup_requires=['wheel'],
+    packages=find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: Unix",
         "Intended Audience :: Science/Research",
     ],
+    # entry_points={
+    #     'console_script': [
+    #         'command_name='
+    #         'module, that implement this',
+    #     ],
+    # },
 )
