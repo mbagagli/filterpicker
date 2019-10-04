@@ -263,7 +263,7 @@ class FilterPicker(object):
         self._analyzeTrigger()
         return self.pickIDX*self.dt, self.pickUNC, self.pickFRQ+1
 
-    def plot(self, show=True):
+    def plot(self, show=True, fp_param_title=True, fig_title=None):
         """
         Create a comprehensive figure of the different CFs and picks.
         If show=True the fgire is displayed realtime.
@@ -332,13 +332,16 @@ class FilterPicker(object):
         plt.tight_layout()
         plt.subplots_adjust(hspace=0.0)
         #
-        fig.suptitle((('TL, TF, Tup, S1, S2' + os.linesep +
-                       '%5.2f, %5.2f, %5.2f, %5.2f, %5.2f') %
-                      (self.tf, self.tl, self.tup, self.thr1, self.thr2)),
-                     fontsize=11)
+        if fp_param_title:
+            fig.suptitle((('TL, TF, Tup, S1, S2' + os.linesep +
+                           '%5.2f, %5.2f, %5.2f, %5.2f, %5.2f') %
+                         (self.tf, self.tl, self.tup, self.thr1, self.thr2)),
+                         fontsize=16, fontweight="bold")
+        else:
+            if fig_title:
+                fig.suptitle(fig_title, fontsize=16, fontweight="bold")
+
         if show:
             plt.show()
         #
         return fig, axLst
-
-
