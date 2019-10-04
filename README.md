@@ -2,7 +2,7 @@
 =========================
 
 *  AUTHOR: _Matteo Bagagli_
-* VERSION: _1.0.1_
+* VERSION: _1.0.2_
 *    DATE: _06/2019_
 
 FilterPicker is a general purpose, broad-band, phase detector and picker which is applicable to real-time seismic monitoring and earthquake early-warning.

@@ -1,0 +1,10 @@
+README.md
+setup.cfg
+setup.py
+filterpicker/__init__.py
+filterpicker/filterpicker.py
+filterpicker.egg-info/PKG-INFO
+filterpicker.egg-info/SOURCES.txt
+filterpicker.egg-info/dependency_links.txt
+filterpicker.egg-info/requires.txt
+filterpicker.egg-info/top_level.txt
