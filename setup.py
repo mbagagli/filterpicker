@@ -25,10 +25,11 @@ setup(
         "Operating System :: Unix",
         "Intended Audience :: Science/Research",
     ],
-    # entry_points={
-    #     'console_script': [
-    #         'command_name='
-    #         'module, that implement this',
-    #     ],
-    # },
+    entry_points={
+        'console_scripts': [
+            'fp_script=filterpicker.cli.fp_script:main',
+        ],
+    },
+    include_package_data=True,
+    zip_safe=False,
 )
