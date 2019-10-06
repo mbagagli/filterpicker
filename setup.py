@@ -8,7 +8,7 @@ with open("requirements.txt") as f:
 
 setup(
     name="filterpicker",
-    version="1.0.2",
+    version="1.0.3",
     author="Matteo Bagagli",
     author_email="matteo.bagagli@gmail.com",
     description="Python implementation of the A.Lomax Filter Picker",
@@ -27,7 +27,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'fp_script=filterpicker.cli.fp_script:main',
+            'obspy_script=filterpicker.cli.obspy_script:main',
         ],
     },
     include_package_data=True,

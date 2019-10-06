@@ -2,52 +2,44 @@
 =========================
 
 *  AUTHOR: _Matteo Bagagli_
-* VERSION: _1.0.2_
-*    DATE: _06/2019_
+* VERSION: _1.0.3_
+*    DATE: _10/2019_
 
 FilterPicker is a general purpose, broad-band, phase detector and picker which is applicable to real-time seismic monitoring and earthquake early-warning.
-Python implementation of the A.Lomax Filter Picker. Inspiration has been taken from the MATLAB [implementation](https://ch.mathworks.com/matlabcentral/fileexchange/69211-filterpicker-a-robust-broadband-phase-detector-and-picker)[3] of Y.Kamer. This picker class has been rewritten using NumPy libraries.
+This module is a Python implementation of the A.Lomax Filter Picker. Inspiration has been taken from the MATLAB [implementation](https://ch.mathworks.com/matlabcentral/fileexchange/69211-filterpicker-a-robust-broadband-phase-detector-and-picker)[3] of Y.Kamer. This picker class has been rewritten using NumPy libraries.
 
 For a full reference of usage/method the reader is referenced to the main author paper [1][2]
 
 ## Installation
 
 
-Recently the package has been uploaded in _PyPi_ repository, you could just type:
+Recently the package has been uploaded in _PyPi_ repository, therefore you could just type:
 ```
 pip install filterpicker
 ```
+and be ready to go.
 
-Otherwise you could install the library manually. The installation is pretty easy because the package comes with an installer. All the dependencies are explained in the `requirements.txt` file. It's suggested to use a virtual environment (`conda` or `pipenv`)
+If you want to install the library manually or just being updated to the latest patches, the installation is pretty easy because the package comes with an installer. All the dependencies are explained in the `requirements.txt` file. It's suggested to use a virtual environment (`conda` or `pipenv`)
 
+Just open a terminal and type
 ```
+$ git clone https://github.com/billy4all/filterpicker /somwhere/in/my/pc
 $ cd where/you/cloned
 $ # optionally activate your virtual env
 $ pip install .
-$ pytest
 ```
 
 ## Tests
-To run the simple test you just need to type:
+To run a simple test to make sure you're ready to go, just type:
 ```
 $ cd where/the/package/is
 $ pytest
 ```
 
-If all test are passed you can verify the installation by running:
-```
-import numpy as np
-from filterpicker import filterpicker as FP
-fpp = FP.FilterPicker(0.008, np.loadtxt('./tests/fg_sac.npa'),
-                      filter_window=1.6, longterm_window=3.2, t_up=0.16,
-                      threshold_1=20, threshold_2=10)
-pidx, punc, pfrq = fpp.run()
-print(pidx, punc, pfrq)
-fig = fpp.plot()
-```
+You can also double check the performance of the software by running the scripts in the `example` folder (manual installation) or run the command-line exec store `obspy_script` (PyPI).
+The module is fully compatible with the famous **ObsPy** library: just fed the picker with the trace data (`obspy.core.Trace.data` numpy array).
 
-The previous set of commands are already stored in a script `./bin/fp_script.sh`
-
+For any issues/bug reports, please send an email to: _matteo.bagagli@erdw.ethz.ch_
 
 Enjoy ^-^
 
