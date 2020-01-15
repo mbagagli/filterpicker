@@ -1,5 +1,7 @@
 # Filter Picker
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3609025.svg)](https://doi.org/10.5281/zenodo.3609025)
+
 *  AUTHOR: _Matteo Bagagli_
 * VERSION: _1.0.3_
 *    DATE: _10/2019_
