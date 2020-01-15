@@ -1,5 +1,4 @@
 # Filter Picker
-=========================
 
 *  AUTHOR: _Matteo Bagagli_
 * VERSION: _1.0.3_
@@ -10,8 +9,9 @@ This module is a Python implementation of the A.Lomax Filter Picker. Inspiration
 
 For a full reference of usage/method the reader is referenced to the main author paper [1][2]
 
-## Installation
+If you make use of this package, please consider of citing it with the provided DOI. Thanks :)
 
+## Installation
 
 Recently the package has been uploaded in _PyPi_ repository, therefore you could just type:
 ```
@@ -30,6 +30,7 @@ $ pip install .
 ```
 
 ## Tests
+
 To run a simple test to make sure you're ready to go, just type:
 ```
 $ cd where/the/package/is
@@ -44,7 +45,7 @@ For any issues/bug reports, please send an email to: _matteo.bagagli@erdw.ethz.c
 Enjoy ^-^
 
 ##### References
--------------------------
+
 [1] Lomax, A., C. Satriano and M. Vassallo (2012), Automatic picker developments and optimization: FilterPicker - a robust, broadband picker for real-time seismic monitoring and earthquake early-warning, Seism. Res. Lett. , 83, 531-540, doi: 10.1785/gssrl.83.3.531.
 
 [2] Vassallo, M., C. Satriano and A. Lomax, (2012), Automatic picker developments and optimization: A strategy for improving the performances of automatic phase pickers, Seism. Res. Lett. , 83, 541-554, doi: 10.1785/gssrl.83.3.541.
