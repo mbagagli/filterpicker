@@ -8,14 +8,26 @@
 
 FilterPicker is a general purpose, broad-band, phase detector and picker which is applicable to real-time seismic monitoring and earthquake early-warning.
 This module is a Python implementation of the A.Lomax Filter Picker. Inspiration has been taken from the MATLAB [implementation](https://ch.mathworks.com/matlabcentral/fileexchange/69211-filterpicker-a-robust-broadband-phase-detector-and-picker)[3] of Y.Kamer. This picker class has been rewritten using NumPy libraries.
+For a full method description the reader is referred to the main authors paper [1][2]
 
-For a full reference of usage/method the reader is referenced to the main author paper [1][2]
+If you make use of this package, please **consider citing** it with the provided DOI. Thanks :)
 
-If you make use of this package, please consider of citing it with the provided DOI. Thanks :)
+```
+@misc{mbagagli_2019_3609025,
+    author       = {Matteo Bagagli},
+    title        = {filterpicker: general purpose, broad-band, phase detector and picker},
+    month        = Nov,
+    year         = 2019,
+    doi          = {10.5281/zenodo.3609025},
+    version      = {1.0.3},
+    publisher    = {Zenodo},
+    url          = {https://doi.org/10.5281/zenodo.3609025}
+    }
+```
 
 ## Installation
 
-Recently the package has been uploaded in _PyPi_ repository, therefore you could just type:
+Recently the package has been uploaded in _PyPI_ repository, therefore you could just type:
 ```
 pip install filterpicker
 ```
@@ -40,10 +52,9 @@ $ pytest
 ```
 
 You can also double check the performance of the software by running the scripts in the `example` folder (manual installation) or run the command-line exec store `obspy_script` (PyPI).
-The module is fully compatible with the famous **ObsPy** library: just fed the picker with the trace data (`obspy.core.Trace.data` numpy array).
+The module is fully compatible with the widely used **ObsPy** library: just fed the picker with the trace data (`obspy.core.Trace.data` numpy array). It will work with any numpy.array, though.
 
 For any issues/bug reports, please send an email to: _matteo.bagagli@erdw.ethz.ch_
-
 Enjoy ^-^
 
 ##### References
