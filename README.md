@@ -33,6 +33,8 @@ pip install filterpicker
 ```
 and be ready to go.
 
+Please note that this package has been **fully tested with Python 3.6 and Python 3.7 interpreters**. Other Python3 versions support is ongoing.
+
 If you want to install the library manually or just being updated to the latest patches, the installation is pretty easy because the package comes with an installer. All the dependencies are explained in the `requirements.txt` file. It's suggested to use a virtual environment (`conda` or `pipenv`)
 
 Just open a terminal and type
