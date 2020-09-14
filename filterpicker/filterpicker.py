@@ -54,7 +54,7 @@ class FilterPicker(object):
         self.veclim = (0, len(self.y))
         self.base = base
         # For new 'get' methods
-        self.FnS = None
+        self.ididrun = False
 
     def _sec2sample(self, value, df):
         """
@@ -72,6 +72,7 @@ class FilterPicker(object):
     def _setup(self):
         """ Finalize the parameter preparation based on input """
 
+        self.ididrun = True
         # Filter window in dT
         PRM_Tflt = self.base**np.ceil(np.log(self.tf)/np.log(self.base))
         self.PRM_Tlng = self.tl
@@ -323,7 +324,7 @@ class FilterPicker(object):
     def get_evaluation_function(self):
         """get_evaluation_function
         """
-        if self.FnS:
+        if self.ididrun:
             return self.FnS
         else:
             raise AttributeError("Missing evaluation function! "
