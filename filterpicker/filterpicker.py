@@ -53,6 +53,8 @@ class FilterPicker(object):
         # MB: next line can be changed to work on smaller portion
         self.veclim = (0, len(self.y))
         self.base = base
+        # For new 'get' methods
+        self.FnS = None
 
     def _sec2sample(self, value, df):
         """
@@ -317,3 +319,12 @@ class FilterPicker(object):
             plt.show()
         #
         return fig, axLst
+
+    def get_evaluation_function(self):
+        """get_evaluation_function
+        """
+        if self.FnS:
+            return self.FnS
+        else:
+            raise AttributeError("Missing evaluation function! "
+                                 "Use the 'run' method before hand")

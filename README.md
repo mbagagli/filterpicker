@@ -3,8 +3,8 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3609025.svg)](https://doi.org/10.5281/zenodo.3609025)
 
 *  AUTHOR: _Matteo Bagagli_
-* VERSION: _1.0.3_
-*    DATE: _10/2019_
+* VERSION: _1.0.4_
+*    DATE: _09/2020_
 
 FilterPicker is a general purpose, broad-band, phase detector and picker which is applicable to real-time seismic monitoring and earthquake early-warning.
 This module is a Python implementation of the A.Lomax Filter Picker. Inspiration has been taken from the MATLAB [implementation](https://ch.mathworks.com/matlabcentral/fileexchange/69211-filterpicker-a-robust-broadband-phase-detector-and-picker)[3] of Y.Kamer. This picker class has been rewritten using NumPy libraries.
