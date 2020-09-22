@@ -1,7 +1,7 @@
 # Filter Picker
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3609025.svg)](https://doi.org/10.5281/zenodo.3609025)
-![Travis (.org)](https://img.shields.io/travis/mbagagli/filterpicker?label=travis-build&style=plastic)
+![Travis (.org)](https://travis-ci.org/github/mbagagli/filterpicker?label=travis-build&style=plastic)
 
 AUTHOR: _Matteo Bagagli_
 VERSION: _1.0.5_
