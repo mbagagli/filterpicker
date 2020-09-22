@@ -3,9 +3,11 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3609025.svg)](https://doi.org/10.5281/zenodo.3609025)
 [![Travis (.org)](https://img.shields.io/travis/mbagagli/filterpicker?label=travis-build&style=plastic)](https://travis-ci.org/github/mbagagli/filterpicker)
 
-AUTHOR: _Matteo Bagagli_
-VERSION: _1.0.5_
-DATE: _09/2020_
+_AUTHOR: Matteo Bagagli_
+
+_VERSION: 1.0.5_
+
+_DATE: 09/2020_
 
 FilterPicker is a general purpose, broad-band, phase detector and picker which is applicable to real-time seismic monitoring and earthquake early-warning.
 This module is a Python implementation of the A.Lomax Filter Picker. Inspiration has been taken from the MATLAB [implementation](https://ch.mathworks.com/matlabcentral/fileexchange/69211-filterpicker-a-robust-broadband-phase-detector-and-picker)[3] of Y.Kamer. This picker class has been rewritten using NumPy libraries.
@@ -28,13 +30,13 @@ If you make use of this package, please **consider citing** it with the provided
 
 ## Installation
 
-Recently the package has been uploaded in _PyPI_ repository, therefore you could just type:
+Recently the package has been uploaded in _PyPI_ repository (version 1.0.3), therefore you could just type:
 ```
 pip install filterpicker
 ```
-and be ready to go.
+and be ready to go. If you want all the newest features and bugfix, please fork the project or clone it.
 
-Please note that this package has been **fully tested with Python 3.6 and Python 3.7 interpreters**. Other Python3 versions support is ongoing.
+Please note that this package has been **fully tested with Python 3.5 - 3.6 - 3.7 interpreters**. All of this are always tested on CI. The support on Python 3.5 is active only on the latest version (1.0.5) that is now on the master branch.
 
 If you want to install the library manually or just being updated to the latest patches, the installation is pretty easy because the package comes with an installer. All the dependencies are explained in the `requirements.txt` file. It's suggested to use a virtual environment (`conda` or `pipenv`)
 
