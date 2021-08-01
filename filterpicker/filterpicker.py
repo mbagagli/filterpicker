@@ -7,22 +7,35 @@ import matplotlib.pyplot as plt
 
 
 class FilterPicker(object):
-    """
-    Implementation of A.Lomax FilterPicker [1] in Python
-    Inspiration taken from MATLAB code of Y.Kamer [2]
+    """ Main Class for the FilterPicker algorithm
 
-    *** NB: At the moment the picker works on the entire trace, not
-            suitable for online picking.
+    Implementation of A.Lomax FilterPicker in
+    Python language. Support available for Python >= 3.5
 
-    *** NB: np.where return a tuple, that's why I use 0
-            to retrieve the index array
+    At the moment the picker works on the entire trace, not suitable
+    for online picking. Support will be given soon ...
 
-    REFERENCE:
-    [1] Lomax, A., C. Satriano and M. Vassallo (2012), Automatic picker
-        developments and optimization: FilterPicker - a robust, broadband
-        picker for real-time seismic monitoring and earthquake early-warning,
-        Seism. Res. Lett. , 83, 531-540, doi: 10.1785/gssrl.83.3.531.
-    [2] www.mathworks.com/matlabcentral/fileexchange/69211-filterpicker-a-robust-broadband-phase-detector-and-picker
+    Args:
+      dt (int, float): is the sampling time-delta for the given
+        array in seconds.
+      data (list, tuple, np.array): is the actual time-series array.
+        It must contain only numbers.
+      filter_window (int, float): picker's parameter
+      longterm_window (int, float): picker's parameter
+      t_up (int, float): picker's parameter
+      threshold_1 (int, float): picker's parameter
+      threshold_2 (int, float): picker's parameter
+      base (int): picker's parameter
+
+    For an exhaustive description of the picker's parameters the
+    reader is referred to the reference paper
+
+    References:
+        Lomax, A., C. Satriano and M. Vassallo (2012), Automatic picker
+            developments and optimization: FilterPicker - a robust,
+            broadband picker for real-time seismic monitoring and
+            earthquake early-warning, Seism. Res. Lett. , 83, 531-540,
+            doi: [10.1785/gssrl.83.3.531](10.1785/gssrl.83.3.531)
 
     """
 
@@ -33,15 +46,6 @@ class FilterPicker(object):
                  threshold_1=10,
                  threshold_2=10,
                  base=2):
-        """
-        Initialize the object:
-         - dt: is the sampling period of the trace
-         - data: is the values
-         - filter_window:
-         - longterm_window:
-        For the picker parameter go throught the references
-
-        """
         self.dt = dt
         self.y = data
         self.tf = self._sec2sample(filter_window, 1.0/self.dt)
@@ -57,20 +61,25 @@ class FilterPicker(object):
         self.ididrun = False
 
     def _sec2sample(self, value, df):
-        """
-        Utility method to define convert USER input parameter (seconds)
-        into obspy pickers 'n_sample' units.
+        """ Convert seconds to samples number
 
-        Python3 round(float)==int // Python2 round(float)==float
-        BETTER USE: int(round(... to have compatibility
+        Utility method to define convert USER input parameters (seconds)
+        into obspy pickers `n_sample` units.
 
-        Formula: int(round( INSEC * df))
-        *** NB: input value sec could be float
+        Formula:
+          `int(round( INSEC * df))`
+        Args:
+          value (int, float): input seconds
+          df (int, float):  number of samples per seconds
+
+        Returns:
+            number of samples
+
         """
         return int(round(value * df))
 
     def _setup(self):
-        """ Finalize the parameter preparation based on input """
+        """ Finalize the class attribute """
 
         self.ididrun = True
         # Filter window in dT
@@ -89,7 +98,7 @@ class FilterPicker(object):
         return True
 
     def _loopOverBands(self):
-        """ Middle term game of the picker """
+        """ Core loop of the picker's algorithm """
 
         # MB: For each band the CF is created
 
@@ -151,7 +160,7 @@ class FilterPicker(object):
         return True
 
     def _analyzeTrigger(self):
-        """ Final part of the picker """
+        """ Final part of picker's algorithm """
 
         # Next line find index to remove from array
         remidx = np.where((self.PotTrg < (self.PRM_Tlng + self.veclim[0])) |
@@ -206,13 +215,18 @@ class FilterPicker(object):
         return True
 
     def _normalizeTrace(self, nparr, rangeVal=[-1, 1]):
-        """
-        This simple method will normalize the trace between rangeVal.
-        Simply by scaling everything...
+        """ Utility function for time-series normalization
 
-        OUTPUT: a copy of the array
+        This simple method will normalize (scaling) the trace between
+        rangeVal.
 
-        *** INPUT MUST BE A numpy.array
+        Args:
+            nparr (np.array): the input time-series
+            rangeval (list):  a 2-element list defining upper and lower
+                value or the scaling
+
+        Returns:
+            outarr (np.array): a normalized copy of the orginal array
 
         """
         outarr = np.zeros(shape=nparr.shape)
@@ -224,30 +238,39 @@ class FilterPicker(object):
     # ----------------------------------------------- PUBLIC
 
     def run(self):
-        """
-        Orchestrator of the picker, calls in sequence the
-        needed functions.
+        """ Main method for picking
 
-        OUTPUT:
-         - pickIDX
-         - pickUNC
-         - pickFRQ
+        Orchestrator of the picker, calls in sequence the needed functions.
+
+        Returns:
+            pickIDX (list): the time-series indexes of picks
+            pickUNC (list): the time-series indexes of picks
+            pickFRQ (list): the time series
         """
+
         self._setup()
         self._loopOverBands()
         self._analyzeTrigger()
         return self.pickIDX*self.dt, self.pickUNC, self.pickFRQ+1
 
     def plot(self, show=True, fp_param_title=True, fig_title=None):
-        """
+        """ Main picker's plot routine.
         Create a comprehensive figure of the different CFs and picks.
         If show=True the fgire is displayed realtime.
 
-        OUTPUT:
-            - Return Fig Handle
+        Optionals:
+            show (bool): if True, the figure will be displayed at run time
+            fp_param_title (bool): if True, the figure's title will be
+            composed with the picking parameters value adopted
+            fig_title (str): default to None. If a string is given, that
+            will be the figure's title.
+
+        Returns
+            fig (plt.figure): figure's handle
+            axLst (list): list of plot axis handles
 
         """
-        # --- Body
+
         fig, axLst = plt.subplots(nrows=self.numBnd,
                                   sharex=True, sharey=True,
                                   figsize=(10, 7))
@@ -303,7 +326,6 @@ class FilterPicker(object):
             axLst[_kk].set_xlim([timeax[0], timeax[-1]])
             axLst[_kk].legend(loc='upper left')
 
-        #
         plt.tight_layout()
         plt.subplots_adjust(hspace=0.0)
         #
@@ -322,8 +344,8 @@ class FilterPicker(object):
         return fig, axLst
 
     def get_evaluation_function(self):
-        """get_evaluation_function
-        """
+        """ Returns the charachteristic functions  of each band """
+
         if self.ididrun:
             return self.FnS
         else:
