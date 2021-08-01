@@ -2,6 +2,7 @@
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3609025.svg)](https://doi.org/10.5281/zenodo.3609025)
 [![Travis (.org)](https://img.shields.io/travis/mbagagli/filterpicker?label=travis-build&style=plastic)](https://travis-ci.org/github/mbagagli/filterpicker)
+[![Documentation Status](https://readthedocs.org/projects/filterpicker/badge/?version=latest)](https://filterpicker.readthedocs.io/en/latest/?badge=latest)
 
 _AUTHOR: Matteo Bagagli_
 
