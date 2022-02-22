@@ -76,7 +76,9 @@ class FilterPicker(object):
             number of samples
 
         """
-        return int(round(value * df))
+        _tmp = value * df
+        _tmp += 0.00111  # trick/workaround to properly round  XXX.5 to XXX+1.0
+        return int(np.round(_tmp))
 
     def _setup(self):
         """ Finalize the class attribute """
@@ -101,8 +103,8 @@ class FilterPicker(object):
         """ Core loop of the picker's algorithm """
 
         # MB: For each band the CF is created
-
         for n in range(1, self.numBnd):
+            # --- Define Poles for filtering bands
             w = (self.base**n*self.dt) / (2*np.pi)
             cHP = w/(w+self.dt)
             cLP = self.dt/(w+self.dt)
@@ -245,7 +247,7 @@ class FilterPicker(object):
         Returns:
             pickIDX (list): the time-series indexes of picks
             pickUNC (list): the time-series indexes of picks
-            pickFRQ (list): the time series
+            pickFRQ (list): the frequency band where it was triggered
         """
 
         self._setup()
@@ -344,10 +346,35 @@ class FilterPicker(object):
         return fig, axLst
 
     def get_evaluation_function(self):
-        """ Returns the charachteristic functions  of each band """
-
+        """ Returns the charachteristic functions where picks
+            are triggered.
+        """
         if self.ididrun:
             return self.FnS
         else:
             raise AttributeError("Missing evaluation function! "
+                                 "Use the 'run' method before hand")
+
+    def get_bands(self):
+        """ Returns the charachteristic function of each band """
+        out_dict = {}
+        ymax = np.max(self.FnS[self.PRM_Tlng:])
+        #
+        if self.ididrun:
+            for _kk in range(1, self.numBnd):
+                labkk = '{:.2f}'.format(1/(self.base**(_kk-1)*self.dt))
+
+                out_dict[labkk+" Hz LP"] = (
+                    ymax*self.Yout[_kk, :] /
+                    (2*np.max(np.abs(self.Yout[_kk, :])))
+                   )
+
+                out_dict[labkk+" Hz CF"] = self.Fn[_kk, :]
+
+                out_dict[labkk+" Hz Cum."] = self.FnL[_kk, :]
+
+            #
+            return out_dict
+        else:
+            raise AttributeError("Missing filtered charachteristic functions! "
                                  "Use the 'run' method before hand")
