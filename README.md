@@ -1,6 +1,6 @@
 # Filter-Picker
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3609025.svg)](https://doi.org/10.5281/zenodo.3609025)
+[![DOI](https://zenodo.org/badge/212803095.svg)](https://zenodo.org/badge/latestdoi/212803095)
 [![Travis (.org)](https://img.shields.io/travis/mbagagli/filterpicker?label=travis-build&style=plastic)](https://travis-ci.org/github/mbagagli/filterpicker)
 [![Documentation Status](https://readthedocs.org/projects/filterpicker/badge/?version=latest)](https://filterpicker.readthedocs.io/en/latest/?badge=latest)
 
@@ -23,22 +23,14 @@ If you make use of this package, please consider citing* it with the provided DO
 @misc{mbagagli_2019_3609025,
     author       = {Matteo Bagagli},
     title        = {filterpicker: general purpose, broad-band, phase detector and picker},
-    month        = Nov,
-    year         = 2019,
-    doi          = {10.5281/zenodo.3609025},
-    version      = {1.0.3},
+    month        = May,
+    year         = 2022,
+    doi          = {10.5281/zenodo.6511985},
+    version      = {1.1.0},
     publisher    = {Zenodo},
-    url          = {https://doi.org/10.5281/zenodo.3609025}
+    url          = {https://doi.org/10.5281/zenodo.6511985}
     }
 ```
-
-
-<!-- # "(e.g. -x  # only linear detrend and mean removal"
-# "      -x bandpass 1 30 2 # linear detrend and mean removal + "
-# "filtering (type f1 [f2] n-poles)"
-# "   USAGE: %(prog)s STREAMPATH -p 0.20 1.0 0.1 5 10 2 "
-# "-x bandpass 1 30 -o fp_picks.csv" -->
-
 
 ## Installation
 
