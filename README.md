@@ -1,20 +1,23 @@
-# Filter Picker
+# Filter-Picker
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3609025.svg)](https://doi.org/10.5281/zenodo.3609025)
 [![Travis (.org)](https://img.shields.io/travis/mbagagli/filterpicker?label=travis-build&style=plastic)](https://travis-ci.org/github/mbagagli/filterpicker)
 [![Documentation Status](https://readthedocs.org/projects/filterpicker/badge/?version=latest)](https://filterpicker.readthedocs.io/en/latest/?badge=latest)
 
-_AUTHOR: Matteo Bagagli_
+AUTHOR: Matteo Bagagli
 
-_VERSION: 1.0.7_
+VERSION: 1.1.0
 
-_DATE: 02/2022_
+DATE: 05/2022
 
-FilterPicker is a general purpose, broad-band, phase detector and picker which is applicable to real-time seismic monitoring and earthquake early-warning.
-This module is a Python implementation of the A.Lomax Filter Picker. Inspiration has been taken from the MATLAB [implementation](https://ch.mathworks.com/matlabcentral/fileexchange/69211-filterpicker-a-robust-broadband-phase-detector-and-picker)[3] of Y.Kamer. This picker class has been rewritten using NumPy libraries.
-For a full method description the reader is referred to the main authors paper [1][2]
+-------------------------------------------------------
 
-If you make use of this package, please **consider citing** it with the provided DOI. Thanks :)
+FilterPicker is a general purpose, broad-band, phase detector and picker which is applicable to
+real-time seismic monitoring and earthquake early-warning.
+This module is a Python implementation of the A.Lomax Filter Picker and has has been rewritten using NumPy libraries.
+For a full method description the reader is referred to the main authors paper.
+
+If you make use of this package, please consider citing* it with the provided DOI. Thanks :)
 
 ```
 @misc{mbagagli_2019_3609025,
@@ -39,15 +42,27 @@ If you make use of this package, please **consider citing** it with the provided
 
 ## Installation
 
-Recently the package has been uploaded in _PyPI_ repository (version 1.0.3), therefore you could just type:
-```
-pip install filterpicker
-```
-and be ready to go. If you want all the newest features and bugfix, please fork the project or clone it.
+### PyPI
 
-Please note that this package has been **fully tested with Python 3.5 - 3.6 - 3.7 interpreters**. All of this are always tested on CI. The support on Python 3.5 is active only on the latest version (1.0.5) that is now on the master branch.
+The package has been uploaded in _PyPI_ repository.
+For the stable releases you could just type:
+```
+pip install filterpicker  # (latest 1.1.0)
+```
+and be ready to go. If you want all the newest features and bugfix, please fork the project or clone it locally (see below the manual installation procedures).
 
-If you want to install the library manually or just being updated to the latest patches, the installation is pretty easy because the package comes with an installer. All the dependencies are explained in the `requirements.txt` file. It's suggested to use a virtual environment (`conda` or `pipenv`)
+Please note that PyPI releases don't support Python=3.5.
+If you would like to have it, download the GitHub release `v1.0.5`.
+
+Since version `v1.1.0` the support for Python=3.5 has been dropped!
+All commits are always tested on CI to ensure stability over releases.
+
+### Manual installation and contribution
+
+If you want to install the library manually or just being updated to the latest patches,
+the installation is pretty easy because the package comes with an installer.
+All the dependencies are explained in the `requirements.txt` file.
+It is still recommended, though, to use a virtual environment (`conda` or `pipenv`)
 
 Just open a terminal and type
 ```
@@ -55,26 +70,37 @@ $ git clone https://github.com/billy4all/filterpicker /somwhere/in/my/pc
 $ cd where/you/cloned
 $ # optionally activate your virtual env
 $ pip install .
+$ pytest  # to double-check the correct installation (need to install pytest first)
+```
+For contributions (that are very welcome), please use the `DEVELOP` branch as the upstream one.
+
+## How to
+If you did install manually the package you can try the software by running the scripts
+in the `example` folder (manual installation).
+
+Although being used mostly as a seismic phase-picker, this software is a great transient detector
+that could come handy for other time-series analysis as well. For this reason, I tried to mantain the
+library dependencies as clean as possible (only `numpy` and `matplotlib`).
+In fact, in order to work the software needs only a `numpy.array` and a sampling time.
+
+From `v1.1.0` I provide a python wrapper for seismic-phases picking: `bin/run_filter_picker.py`.
+The script can be called from commandline and comes with an helper (`run_filter_picker.py --help`)
+n order to work, the scripts needs to have the [ObsPy](https://github.com/obspy/obspy) library installed in
+order to handle the I/O operations.  Example usage:
+```bash
+$ run_filter_picker.py OBSPY-STREAM-PATH -p 0.20  1.0  0.1  5  10  2 -x bp 2 1 30 --plot
 ```
 
-## Tests
 
-To run a simple test to make sure you're ready to go, just type:
-```
-$ cd where/the/package/is
-$ pytest
-```
+--------------------------------------------------------------
+For any issues bug reports, the use of the GitHub [issues panel](https://github.com/mbagagli/filterpicker/issues)
+is preferred. Otherwise, send an email to the [maintainer](mailto:matteo.bagagli@ingv.it).
 
-You can also double check the performance of the software by running the scripts in the `example` folder (manual installation) or run the command-line exec store `obspy_script` (PyPI).
-The module is fully compatible with the widely used **ObsPy** library: just fed the picker with the trace data (`obspy.core.Trace.data` numpy array). It will work with any numpy.array, though.
 
-For any issues/bug reports, please send an email to: _matteo.bagagli@erdw.ethz.ch_
-Enjoy ^-^
+#### References
 
-##### References
+- Lomax, A., C. Satriano and M. Vassallo (2012), Automatic picker developments and optimization: FilterPicker - a robust, broadband picker for real-time seismic monitoring and earthquake early-warning, Seism. Res. Lett. , 83, 531-540, doi: 10.1785/gssrl.83.3.531.
 
-[1] Lomax, A., C. Satriano and M. Vassallo (2012), Automatic picker developments and optimization: FilterPicker - a robust, broadband picker for real-time seismic monitoring and earthquake early-warning, Seism. Res. Lett. , 83, 531-540, doi: 10.1785/gssrl.83.3.531.
+- Vassallo, M., C. Satriano and A. Lomax, (2012), Automatic picker developments and optimization: A strategy for improving the performances of automatic phase pickers, Seism. Res. Lett. , 83, 541-554, doi: 10.1785/gssrl.83.3.541.
 
-[2] Vassallo, M., C. Satriano and A. Lomax, (2012), Automatic picker developments and optimization: A strategy for improving the performances of automatic phase pickers, Seism. Res. Lett. , 83, 541-554, doi: 10.1785/gssrl.83.3.541.
-
-[3] MATLAB packagehttps://ch.mathworks.com/matlabcentral/fileexchange/69211-filterpicker-a-robust-broadband-phase-detector-and-picker
+- [MATLAB package](https://ch.mathworks.com/matlabcentral/fileexchange/69211-filterpicker-a-robust-broadband-phase-detector-and-picker)

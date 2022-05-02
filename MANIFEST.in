@@ -1,7 +1,5 @@
 include LICENSE.txt
 include README.md
-include tox.ini
-
+recursive-include bin
 recursive-include tests *
 include requirements.txt
-include requirements_dev.txt

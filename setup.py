@@ -8,7 +8,7 @@ with open("requirements.txt") as f:
 
 setup(
     name="filterpicker",
-    version="1.0.8",
+    version="1.1.0",
     author="Matteo Bagagli",
     author_email="matteo.bagagli@ingv.it",
     description="Python implementation of the A.Lomax Filter-Picker",
@@ -23,10 +23,10 @@ setup(
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: Unix",
+        "Operating System :: MacOS",
         "Intended Audience :: Science/Research",
     ],
     include_package_data=True,
     zip_safe=False,
     scripts=['bin/run_filter_picker.py']
-    # scripts=['filterpicker/cli/run_filter_picker.py']
 )
