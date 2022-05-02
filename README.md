@@ -29,6 +29,14 @@ If you make use of this package, please **consider citing** it with the provided
     }
 ```
 
+
+<!-- # "(e.g. -x  # only linear detrend and mean removal"
+# "      -x bandpass 1 30 2 # linear detrend and mean removal + "
+# "filtering (type f1 [f2] n-poles)"
+# "   USAGE: %(prog)s STREAMPATH -p 0.20 1.0 0.1 5 10 2 "
+# "-x bandpass 1 30 -o fp_picks.csv" -->
+
+
 ## Installation
 
 Recently the package has been uploaded in _PyPI_ repository (version 1.0.3), therefore you could just type:

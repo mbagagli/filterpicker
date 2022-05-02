@@ -346,7 +346,7 @@ class FilterPicker(object):
         return fig, axLst
 
     def get_evaluation_function(self):
-        """ Returns the charachteristic functions where picks
+        """ Returns the carachteristic functions where picks
             are triggered.
         """
         if self.ididrun:
@@ -356,7 +356,7 @@ class FilterPicker(object):
                                  "Use the 'run' method before hand")
 
     def get_bands(self):
-        """ Returns the charachteristic function of each band """
+        """ Returns the carachteristic function of each band """
         out_dict = {}
         ymax = np.max(self.FnS[self.PRM_Tlng:])
         #
@@ -376,5 +376,5 @@ class FilterPicker(object):
             #
             return out_dict
         else:
-            raise AttributeError("Missing filtered charachteristic functions! "
+            raise AttributeError("Missing filtered carachteristic functions! "
                                  "Use the 'run' method before hand")

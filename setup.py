@@ -8,14 +8,14 @@ with open("requirements.txt") as f:
 
 setup(
     name="filterpicker",
-    version="1.0.7",
+    version="1.0.8",
     author="Matteo Bagagli",
-    author_email="matteo.bagagli@erdw.ethz.ch",
-    description="Python implementation of the A.Lomax Filter Picker",
+    author_email="matteo.bagagli@ingv.it",
+    description="Python implementation of the A.Lomax Filter-Picker",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://gitlab.ethz.ch/mbagagli/filterpicker",
-    python_requires='>=3.5',
+    url="https://github.com/mbagagli/filterpicker",
+    python_requires='>=3.6',
     install_requires=required_list,
     setup_requires=['wheel'],
     packages=find_packages(),
@@ -25,11 +25,8 @@ setup(
         "Operating System :: Unix",
         "Intended Audience :: Science/Research",
     ],
-    entry_points={
-        'console_scripts': [
-            'obspy_script=filterpicker.cli.obspy_script:main',
-        ],
-    },
     include_package_data=True,
     zip_safe=False,
+    scripts=['bin/run_filter_picker.py']
+    # scripts=['filterpicker/cli/run_filter_picker.py']
 )
